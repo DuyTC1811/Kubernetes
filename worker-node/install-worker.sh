@@ -46,12 +46,13 @@ setenforce 0
 sed -i --follow-symlinks 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/sysconfig/selinux
 
 # Cho phép các cổng  worker-node
-firewall-cmd --add-port={10250,30000-32767,5473,179,5473,6783}/tcp --permanent
-firewall-cmd --add-port={4789,8285,8472,6783,6784}/udp --permanent
+firewall-cmd --add-port={10250,30000-32767,5473,179,5473,6783}/tcp --permanent --zone=public
+firewall-cmd --add-port={4789,8285,8472,6783,6784}/udp --permanent --zone=public
 firewall-cmd --reload
 firewall-cmd --list-ports
 
 # sysctl
+modprobe br_netfilter
 cat >>/etc/sysctl.d/kubernetes.conf<<EOF
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
